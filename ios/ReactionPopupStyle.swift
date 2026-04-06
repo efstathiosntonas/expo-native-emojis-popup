@@ -10,7 +10,7 @@ enum EmojisPopupErrorCode: String {
   case presentationFailed = "PRESENTATION_FAILED"
 }
 
-final class EmojisPopupError: Exception {
+final class EmojisPopupError: Exception, @unchecked Sendable {
   convenience init(_ code: EmojisPopupErrorCode, description: String) {
     self.init(name: "EmojisPopupError", description: description, code: code.rawValue)
   }
