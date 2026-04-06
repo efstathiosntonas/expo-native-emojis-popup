@@ -4,6 +4,10 @@
 
 A fully native emoji reaction popup for React Native. Built entirely in Swift (iOS) and Kotlin (Android) -- every interaction runs at 60+ FPS with zero bridge overhead.
 
+| iOS | Android |
+|-|-|
+| <video src="https://github.com/user-attachments/assets/148f0923-96dc-45a4-9e28-8ca194037ed3" width="300" /> | <video src="https://github.com/user-attachments/assets/33c2c557-5c7e-4538-9468-f0e5d3ba0db4" width="300" /> |
+
 ## Highlights
 
 - **Fully native on both platforms** -- Swift (iOS) and Kotlin (Android), no JavaScript rendering or web views
