@@ -83,8 +83,10 @@ import { EmojisPopup } from 'expo-native-emojis-popup';
 import type { ShowReactionPopupParams } from 'expo-native-emojis-popup';
 
 function MessageBubble({ message }) {
+  const anchorId = `message-${message.id}`;
+  
   const dragParams: Omit<ShowReactionPopupParams, 'onOpen' | 'onClose'> = {
-    anchorId: `message-${message.id}`,
+    anchorId,
     haptics: { onOpen: true, onSelect: true },
     items: [
       { emoji: '❤️', emoji_name: 'Red Heart', id: 'heart' },
@@ -97,7 +99,7 @@ function MessageBubble({ message }) {
 
   return (
     <EmojisPopup
-      anchorId={`message-${message.id}`}
+      anchorId={anchorId}
       dragParams={dragParams}
       gestureMode="longPressDrag"
       onDragDismiss={() => console.log('Dismissed')}
