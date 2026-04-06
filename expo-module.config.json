@@ -1,0 +1,12 @@
+{
+  "platforms": ["ios", "android"],
+  "ios": {
+    "modules": ["ExpoNativeEmojisPopupModule", "EmojisPopupWrapperModule"]
+  },
+  "android": {
+    "modules": [
+      "expo.modules.nativeemojispopup.ExpoNativeEmojisPopupModule",
+      "expo.modules.nativeemojispopup.EmojisPopupWrapperModule"
+    ]
+  }
+}

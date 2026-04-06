@@ -1,0 +1,410 @@
+# expo-native-emojis-popup
+
+> A fully native emoji reaction popup for React Native (iOS + Android). Long-press to show emoji reactions with drag-to-select, spring hover animations, and haptic feedback. Facebook/iMessage-style reaction picker rendered entirely in Swift (iOS) and Kotlin (Android) -- zero bridge overhead, 60+ FPS.
+
+Full documentation: https://github.com/efstathiosntonas/expo-native-emojis-popup/blob/main/README.md
+
+## Installation
+
+```bash
+# Expo
+npx expo install expo-native-emojis-popup
+
+# Bare React Native
+yarn add expo-native-emojis-popup
+cd ios && pod install
+```
+
+Requires: expo >=54.0.0, react >=18.3.1, react-native >=0.81.0
+
+## Exports
+
+```typescript
+import {
+  EmojisPopup,             // declarative anchor wrapper component
+  EmojisPopupModule,       // imperative show()/dismiss() API
+} from 'expo-native-emojis-popup';
+
+// All types are also exported:
+import type {
+  DragDismissEvent,
+  DragPlusEvent,
+  DragSelectEvent,
+  EmojisPopupModuleType,
+  EmojisPopupProps,
+  NativeReactionPopupAnimation,
+  NativeReactionPopupCloseResult,
+  NativeReactionPopupErrorCode,
+  NativeReactionPopupHaptics,
+  NativeReactionPopupItem,
+  NativeReactionPopupPlacement,
+  NativeReactionPopupResult,
+  NativeReactionPopupStyle,
+  ShowReactionPopupParams,
+} from 'expo-native-emojis-popup';
+```
+
+## Complete TypeScript Types
+
+```typescript
+type NativeReactionPopupItem = {
+  emoji: string;       // emoji character (e.g., '❤️')
+  emoji_name: string;  // display name shown in hover label (e.g., 'Red Heart')
+  id: string;          // unique identifier returned in result (e.g., 'heart')
+};
+
+type NativeReactionPopupPlacement = 'above' | 'auto' | 'below';
+
+type NativeReactionPopupHaptics = {
+  onOpen?: boolean;    // haptic on popup open (default: false)
+  onPlus?: boolean;    // haptic on plus tap (default: false)
+  onSelect?: boolean;  // haptic on emoji select (default: false)
+};
+
+type NativeReactionPopupAnimation = {
+  emojiPopScale?: number;     // emoji entrance pop scale (default: 1.12)
+  itemStaggerMs?: number;     // stagger delay between items in ms (default: 18)
+  openDurationMs?: number;    // popup open duration in ms (default: 180)
+  trayInitialScale?: number;  // tray scale at animation start (default: 0.96)
+};
+
+type NativeReactionPopupStyle = {
+  backdropColor?: string;               // overlay color (default: '#000000')
+  backdropOpacity?: number;             // overlay opacity 0-1 (default: 0.16)
+  backgroundColor?: string;             // tray background (default: '#1F1F1F')
+  borderColor?: string;                 // tray border (default: transparent)
+  borderRadius?: number;                // tray corners (default: 28)
+  borderWidth?: number;                 // tray border width (default: 0)
+  elevation?: number;                   // Android elevation (default: 10)
+  emojiFontSize?: number;               // emoji text size (default: 26)
+  emojiPopScale?: number;               // entrance pop scale (default: 1.12)
+  gap?: number;                         // space between items (default: 10)
+  hoverLabelBackgroundColor?: string;   // hover label bg (default: black 75%)
+  hoverLabelBorderRadius?: number;      // hover label corners (default: 10)
+  hoverLabelColor?: string;             // hover label text color (default: white)
+  hoverLabelFontSize?: number;          // hover label font size (default: 12)
+  hoverLabelPaddingHorizontal?: number; // hover label h padding (default: 8)
+  hoverLabelPaddingVertical?: number;   // hover label v padding (default: 4)
+  hoverScale?: number;                  // hover zoom scale (default: 1.6)
+  hoverTranslationY?: number;           // hover upward offset (default: 14)
+  itemBackgroundColor?: string;         // item bg (default: transparent)
+  itemBorderColor?: string;             // item border (default: transparent)
+  itemBorderRadius?: number;            // item corners (default: 20)
+  itemBorderWidth?: number;             // item border width (default: 0)
+  itemPressedBackgroundColor?: string;  // item pressed bg
+  itemSelectedBackgroundColor?: string; // selected item bg
+  itemSize?: number;                    // item dimensions (default: emojiFontSize + 16)
+  paddingHorizontal?: number;           // tray horizontal padding (default: 12)
+  paddingVertical?: number;             // tray vertical padding (default: 10)
+  plusBackgroundColor?: string;         // plus button bg
+  plusIconColor?: string;               // plus icon color
+  plusPressedBackgroundColor?: string;   // plus pressed bg
+  shadowColor?: string;                 // shadow color (default: '#000000')
+  shadowOffsetX?: number;               // shadow x offset (default: 0)
+  shadowOffsetY?: number;               // shadow y offset (default: 8)
+  shadowOpacity?: number;               // shadow opacity (default: 0.18)
+  shadowRadius?: number;                // shadow blur (default: 16)
+};
+
+type ShowReactionPopupParams = {
+  anchorId: string;                              // ID of the EmojisPopup anchor to position near (required)
+  animation?: NativeReactionPopupAnimation;      // animation config
+  centerOnScreen?: boolean;                      // center popup on screen instead of anchoring (default: false)
+  dismissOnBackdropPress?: boolean;              // dismiss on backdrop tap (default: true)
+  dismissOnDragOut?: boolean;                    // dismiss on drag release outside popup (default: false)
+  edgePadding?: number;                          // screen edge padding in dp (default: 12)
+  haptics?: NativeReactionPopupHaptics;          // haptic feedback config
+  items: NativeReactionPopupItem[];              // emoji items to display (required, non-empty)
+  onClose?: (result: NativeReactionPopupCloseResult) => void; // called on close with result + cancelled flag
+  onOpen?: () => void;                           // called when popup opens (fires after native call dispatched)
+  plusAccessibilityLabel?: string;               // a11y label for plus button (default: 'More reactions')
+  plusEnabled?: boolean;                         // show plus button (default: false)
+  preferredPlacement?: NativeReactionPopupPlacement; // popup placement (default: 'auto')
+  selectedId?: string | null;                    // pre-selected item ID (default: null)
+  style?: NativeReactionPopupStyle;              // visual style config
+};
+
+// Discriminated union result returned by show()
+type NativeReactionPopupResult =
+  | { type: 'select'; id: string }    // user selected an emoji
+  | { type: 'plus' }                  // user tapped plus button
+  | { type: 'dismiss' };              // user dismissed without selecting
+
+// Extended result with cancelled boolean (passed to onClose callback)
+type NativeReactionPopupCloseResult =
+  | { type: 'select'; id: string; cancelled: false }
+  | { type: 'plus'; cancelled: false }
+  | { type: 'dismiss'; cancelled: true };
+
+type NativeReactionPopupErrorCode =
+  | 'ANCHOR_NOT_FOUND'
+  | 'ANCHOR_NOT_MEASURABLE'
+  | 'EMPTY_ITEMS'
+  | 'INVALID_PARAMS'
+  | 'PRESENTATION_FAILED';
+
+type DragDismissEvent = { nativeEvent: Record<string, never> };
+type DragPlusEvent = { nativeEvent: Record<string, never> };
+type DragSelectEvent = { nativeEvent: { id: string } };
+
+type EmojisPopupProps = {
+  anchorId: string;                              // unique ID to reference this wrapper view (required)
+  children: React.ReactElement;                  // trigger element to wrap (required)
+  dragParams?: Omit<ShowReactionPopupParams, 'onOpen' | 'onClose'>; // popup config for drag mode
+  gestureMode?: 'none' | 'longPressDrag';        // gesture handling (default: 'none')
+  onDragDismiss?: (event: DragDismissEvent) => void; // fired when drag ends without selection
+  onDragPlus?: (event: DragPlusEvent) => void;      // fired when user drags to plus
+  onDragSelect?: (event: DragSelectEvent) => void;  // fired when user selects via drag
+};
+
+// Module interface exposed by EmojisPopupModule
+type EmojisPopupModuleType = {
+  dismiss(): Promise<void>;
+  show(params: ShowReactionPopupParams): Promise<NativeReactionPopupResult>;
+};
+```
+
+## Imperative API
+
+Show a native reaction popup and await the user's selection:
+
+```typescript
+import { EmojisPopupModule } from 'expo-native-emojis-popup';
+
+const result = await EmojisPopupModule.show({
+  anchorId: 'post:123:react',
+  animation: {
+    emojiPopScale: 1.12,
+    itemStaggerMs: 18,
+    openDurationMs: 180,
+    trayInitialScale: 0.96,
+  },
+  dismissOnBackdropPress: true,
+  edgePadding: 12,
+  haptics: { onOpen: true, onPlus: true, onSelect: true },
+  items: [
+    { emoji: '👍', emoji_name: 'Like', id: 'like' },
+    { emoji: '❤️', emoji_name: 'Love', id: 'love' },
+    { emoji: '😂', emoji_name: 'Haha', id: 'haha' },
+    { emoji: '😮', emoji_name: 'Wow', id: 'wow' },
+    { emoji: '😢', emoji_name: 'Sad', id: 'sad' },
+    { emoji: '😡', emoji_name: 'Angry', id: 'angry' },
+  ],
+  onClose: (closeResult) => {
+    // closeResult includes a `cancelled` boolean
+    console.log('Popup closed:', closeResult.type, closeResult.cancelled);
+  },
+  onOpen: () => {
+    console.log('Popup opened');
+  },
+  plusAccessibilityLabel: 'More reactions',
+  plusEnabled: true,
+  preferredPlacement: 'auto',
+  selectedId: 'love',
+  style: {
+    backdropColor: '#000000',
+    backdropOpacity: 0.16,
+    backgroundColor: '#1F1F1F',
+    borderRadius: 28,
+    gap: 10,
+    itemBorderRadius: 20,
+    itemSize: 40,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    plusBackgroundColor: '#343434',
+    plusIconColor: '#AFAFAF',
+    shadowColor: '#000000',
+    shadowOffsetY: 8,
+    shadowOpacity: 0.18,
+    shadowRadius: 16,
+  },
+});
+
+if (result.type === 'select') {
+  console.log('Selected:', result.id);
+} else if (result.type === 'plus') {
+  console.log('Plus tapped');
+} else {
+  console.log('Dismissed');
+}
+
+// Programmatic dismiss
+await EmojisPopupModule.dismiss();
+```
+
+## Declarative API
+
+Wrap any view in an anchor and use `longPressDrag` for a press-and-drag gesture:
+
+```tsx
+import { EmojisPopup } from 'expo-native-emojis-popup';
+import type { ShowReactionPopupParams } from 'expo-native-emojis-popup';
+
+function MessageBubble({ message }) {
+  const dragParams: Omit<ShowReactionPopupParams, 'onOpen' | 'onClose'> = {
+    anchorId: `message-${message.id}`,
+    haptics: { onOpen: true, onSelect: true },
+    items: [
+      { emoji: '❤️', emoji_name: 'Red Heart', id: 'heart' },
+      { emoji: '👍', emoji_name: 'Thumbs Up', id: 'thumbsup' },
+      { emoji: '😂', emoji_name: 'Face with Tears of Joy', id: 'laugh' },
+    ],
+    plusEnabled: true,
+    preferredPlacement: 'auto',
+    selectedId: message.currentReaction,
+  };
+
+  return (
+    <EmojisPopup
+      anchorId={`message-${message.id}`}
+      dragParams={dragParams}
+      gestureMode="longPressDrag"
+      onDragDismiss={() => console.log('Dismissed')}
+      onDragPlus={() => console.log('Plus tapped')}
+      onDragSelect={(e) => console.log('Selected:', e.nativeEvent.id)}
+    >
+      <Text>{message.text}</Text>
+    </EmojisPopup>
+  );
+}
+```
+
+## Gesture Modes
+
+- **`none`** (default) -- no built-in gesture; use the imperative `EmojisPopupModule.show()` API to present the popup programmatically
+- **`longPressDrag`** -- long press opens the popup, then drag finger over emojis to hover and preview; releasing over an emoji selects it; releasing outside the popup keeps it open and converts to tap mode (set `dismissOnDragOut: true` to dismiss instead); hover labels showing the emoji name appear above each item during drag
+
+## Placement
+
+- **`auto`** (default) -- positions above the anchor if space allows, otherwise below
+- **`above`** -- forced above with fallback to below if insufficient space
+- **`below`** -- forced below with fallback to above if insufficient space
+
+All placement modes respect safe area insets and `edgePadding`.
+
+## Error Codes
+
+| Code | Meaning |
+|-|-|
+| ANCHOR_NOT_FOUND | No anchor view with the given anchorId is mounted |
+| ANCHOR_NOT_MEASURABLE | Anchor view exists but could not be measured (zero size, off-screen, not yet laid out) |
+| EMPTY_ITEMS | Items array is empty |
+| INVALID_PARAMS | Invalid parameter values (e.g., missing required fields) |
+| PRESENTATION_FAILED | Native presentation failed (e.g., window not available, no active activity) |
+
+## Style Presets
+
+### Facebook-like Dark
+
+```typescript
+const facebookDarkStyle: NativeReactionPopupStyle = {
+  backdropColor: '#000000',
+  backdropOpacity: 0.4,
+  backgroundColor: '#242526',
+  borderRadius: 28,
+  elevation: 8,
+  emojiFontSize: 28,
+  gap: 4,
+  hoverLabelBackgroundColor: '#242526',
+  hoverLabelBorderRadius: 8,
+  hoverLabelColor: '#E4E6EB',
+  hoverLabelFontSize: 12,
+  hoverLabelPaddingHorizontal: 8,
+  hoverLabelPaddingVertical: 4,
+  hoverScale: 1.4,
+  hoverTranslationY: -8,
+  itemBorderRadius: 22,
+  itemPressedBackgroundColor: '#3A3B3C',
+  itemSelectedBackgroundColor: '#3A3B3C',
+  itemSize: 44,
+  paddingHorizontal: 8,
+  paddingVertical: 6,
+  plusBackgroundColor: '#3A3B3C',
+  plusIconColor: '#B0B3B8',
+  plusPressedBackgroundColor: '#4E4F50',
+  shadowColor: '#000000',
+  shadowOffsetY: 4,
+  shadowOpacity: 0.3,
+  shadowRadius: 12,
+};
+```
+
+### Light Minimal
+
+```typescript
+const lightMinimalStyle: NativeReactionPopupStyle = {
+  backdropColor: '#000000',
+  backdropOpacity: 0.15,
+  backgroundColor: '#FFFFFF',
+  borderRadius: 24,
+  elevation: 4,
+  emojiFontSize: 26,
+  gap: 2,
+  hoverLabelBackgroundColor: '#333333',
+  hoverLabelBorderRadius: 6,
+  hoverLabelColor: '#FFFFFF',
+  hoverLabelFontSize: 11,
+  hoverLabelPaddingHorizontal: 6,
+  hoverLabelPaddingVertical: 3,
+  hoverScale: 1.3,
+  hoverTranslationY: -6,
+  itemBorderRadius: 20,
+  itemPressedBackgroundColor: '#F0F0F0',
+  itemSelectedBackgroundColor: '#E8F0FE',
+  itemSize: 40,
+  paddingHorizontal: 6,
+  paddingVertical: 6,
+  plusBackgroundColor: '#F5F5F5',
+  plusIconColor: '#9E9E9E',
+  plusPressedBackgroundColor: '#E0E0E0',
+  shadowColor: '#000000',
+  shadowOffsetY: 2,
+  shadowOpacity: 0.1,
+  shadowRadius: 8,
+};
+```
+
+## Companion: expo-native-sheet-emojis
+
+The plus button is designed to open a full emoji picker. The companion module [expo-native-sheet-emojis](https://github.com/efstathiosntonas/expo-native-sheet-emojis) provides a fully native emoji picker bottom sheet with 1900+ emojis, search across 21 languages, skin tone selection, and configurable theming.
+
+Together they form a complete reaction system:
+
+1. User long-presses a message/post -> `expo-native-emojis-popup` shows the quick reaction tray
+2. User taps the plus button -> your app presents `expo-native-sheet-emojis` for the full emoji catalog
+3. Selected emoji flows back into your reaction system
+
+```typescript
+import { EmojisPopupModule } from 'expo-native-emojis-popup';
+import { EmojiSheetModule } from 'expo-native-sheet-emojis';
+
+const result = await EmojisPopupModule.show({
+  anchorId: 'message:42',
+  items: quickReactions,
+  plusEnabled: true,
+});
+
+if (result.type === 'plus') {
+  const sheetResult = await EmojiSheetModule.present({ theme: 'dark' });
+  if (!sheetResult.cancelled) {
+    handleReaction(sheetResult.emoji);
+  }
+} else if (result.type === 'select') {
+  handleReaction(result.id);
+}
+```
+
+## Key Behaviors
+
+- Popup is singleton -- calling `show()` dismisses any active popup before presenting a new one
+- Animations respect Reduce Motion (iOS) and Animator Duration Scale (Android)
+- Spring animations for hover effects (stiffness/damping tuned per platform)
+- Hover labels auto-position above the scaled emoji using emojiFontSize for tight spacing
+- Safe area aware positioning -- popup avoids notches and system bars
+- Backdrop tap dismisses by default (configurable via `dismissOnBackdropPress`)
+- Drag release outside popup stays open and converts to tap mode by default (configurable via `dismissOnDragOut`)
+- Items overflow horizontally via native scroll view when they exceed screen width
+- `onOpen` fires after the native call is dispatched (the native presentation begins on the next main thread frame)
+- `onClose` fires after the popup is fully dismissed, receiving a `NativeReactionPopupCloseResult` with a `cancelled` boolean
+- `onOpen` and `onClose` are JS-side callbacks stripped before passing params to native -- they are not native events
+- Color values support hex strings: #RGB, #RGBA, #RRGGBB, #RRGGBBAA
