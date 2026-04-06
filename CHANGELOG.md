@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.3](https://github.com/efstathiosntonas/expo-native-emojis-popup/compare/v1.0.2...v1.0.3) (2026-04-06)
+
+### Bug Fixes
+
+* restate [@unchecked](https://github.com/unchecked) Sendable conformance on EmojisPopupError ([#3](https://github.com/efstathiosntonas/expo-native-emojis-popup/issues/3)) ([1067cd0](https://github.com/efstathiosntonas/expo-native-emojis-popup/commit/1067cd03d71f5bec30aaee6aff8bd582ec514b35))
+
 ## [1.0.2](https://github.com/efstathiosntonas/expo-native-emojis-popup/compare/v1.0.1...v1.0.2) (2026-04-06)
 
 ### Bug Fixes
