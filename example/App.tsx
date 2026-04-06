@@ -73,6 +73,7 @@ function facebookParams(isDark: boolean): ShowReactionPopupParams {
     plusAccessibilityLabel: 'More reactions',
     plusEnabled: true,
     preferredPlacement: 'above',
+    showLabels: true,
     style: facebookStyle(isDark),
   };
 }
@@ -100,7 +101,7 @@ function darkMinimalStyle(isDark: boolean): NativeReactionPopupStyle {
     shadowColor: '#000000',
     shadowOffsetY: 2,
     shadowOpacity: isDark ? 0.4 : 0.1,
-    shadowRadius: 6,
+    shadowRadius: 6
   };
 }
 

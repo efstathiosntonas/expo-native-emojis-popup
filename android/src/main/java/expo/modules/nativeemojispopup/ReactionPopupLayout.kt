@@ -331,7 +331,7 @@ class ReactionPopupLayout(
     val name = target?.let { targetNames[it] }
     val isPlusButton = target != null && targets.indexOf(target) == targets.lastIndex && params.plusEnabled
 
-    if (name == null || isPlusButton) {
+    if (name == null || isPlusButton || !params.showLabels) {
       hoverLabelView.animate().alpha(0f).setDuration(100).start()
       return
     }

@@ -71,6 +71,7 @@ export type ShowReactionPopupParams = {
   haptics?: NativeReactionPopupHaptics;
   animation?: NativeReactionPopupAnimation;
   style?: NativeReactionPopupStyle;
+  showLabels?: boolean;
   onOpen?: () => void;
   onClose?: (result: NativeReactionPopupCloseResult) => void;
 };

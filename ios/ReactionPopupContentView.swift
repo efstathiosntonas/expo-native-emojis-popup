@@ -279,6 +279,13 @@ final class ReactionPopupContentView: UIView {
       return
     }
 
+    guard params.showLabels else {
+      UIView.animate(withDuration: 0.12) {
+        self.hoverLabel.alpha = 0
+      }
+      return
+    }
+
     hoverLabel.configure(text: name, style: params.style)
     hoverLabel.sizeToFit()
 

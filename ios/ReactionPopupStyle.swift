@@ -273,6 +273,7 @@ struct ReactionPopupShowParams {
   let plusEnabled: Bool
   let plusAccessibilityLabel: String
   let preferredPlacement: ReactionPopupPlacement
+  let showLabels: Bool
   let haptics: ReactionPopupHaptics
   let animation: ReactionPopupAnimation
   let style: ReactionPopupStyle
@@ -323,6 +324,10 @@ struct ReactionPopupShowParams {
       )
     }
     self.preferredPlacement = preferredPlacement
+    showLabels = try ReactionPopupParser.bool(
+      dictionary["showLabels"],
+      key: "showLabels"
+    ) ?? true
 
     style = try ReactionPopupStyle(
       dictionary: try ReactionPopupParser.optionalDictionary(dictionary["style"], key: "style")

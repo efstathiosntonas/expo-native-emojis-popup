@@ -183,6 +183,7 @@ data class ReactionPopupShowParams(
   val plusEnabled: Boolean,
   val plusAccessibilityLabel: String,
   val preferredPlacement: ReactionPopupPlacement,
+  val showLabels: Boolean,
   val haptics: ReactionPopupHaptics,
   val animation: ReactionPopupAnimation,
   val style: ReactionPopupStyle,
@@ -218,6 +219,7 @@ data class ReactionPopupShowParams(
           ?.takeIf { it.isNotEmpty() }
           ?: "More reactions",
         preferredPlacement = ReactionPopupPlacement.from(map["preferredPlacement"] as? String),
+        showLabels = map["showLabels"] as? Boolean ?: true,
         haptics = ReactionPopupHaptics.fromMap(map["haptics"] as? Map<String, Any?>),
         animation = ReactionPopupAnimation.fromMap(map["animation"] as? Map<String, Any?>),
         style = ReactionPopupStyle.fromMap(map["style"] as? Map<String, Any?>),

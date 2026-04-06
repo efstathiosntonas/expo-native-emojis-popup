@@ -282,6 +282,7 @@ The result is a discriminated union:
 | plusEnabled | `boolean` | `false` | Show the plus button for "more reactions" (see [Companion: expo-native-sheet-emojis](#companion-expo-native-sheet-emojis)) |
 | preferredPlacement | `'above' \| 'below' \| 'auto'` | `'auto'` | Preferred popup position relative to anchor |
 | selectedId | `string \| null` | `null` | ID of the currently selected reaction |
+| showLabels | `boolean` | `true` | Show emoji name labels on hover during drag gestures |
 | style | `NativeReactionPopupStyle` | -- | Visual style overrides |
 
 ### EmojisPopupModule.dismiss()

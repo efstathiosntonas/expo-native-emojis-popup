@@ -121,6 +121,7 @@ type ShowReactionPopupParams = {
   plusEnabled?: boolean;                         // show plus button (default: false)
   preferredPlacement?: NativeReactionPopupPlacement; // popup placement (default: 'auto')
   selectedId?: string | null;                    // pre-selected item ID (default: null)
+  showLabels?: boolean;                          // show emoji name labels on hover during drag (default: true)
   style?: NativeReactionPopupStyle;              // visual style config
 };
 
@@ -201,6 +202,7 @@ const result = await EmojisPopupModule.show({
   plusEnabled: true,
   preferredPlacement: 'auto',
   selectedId: 'love',
+  showLabels: true,
   style: {
     backdropColor: '#000000',
     backdropOpacity: 0.16,
@@ -252,6 +254,7 @@ function MessageBubble({ message }) {
     plusEnabled: true,
     preferredPlacement: 'auto',
     selectedId: message.currentReaction,
+    showLabels: true,
   };
 
   return (
