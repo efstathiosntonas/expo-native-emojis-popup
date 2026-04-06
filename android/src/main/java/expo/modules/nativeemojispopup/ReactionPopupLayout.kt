@@ -12,6 +12,8 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
@@ -351,8 +353,17 @@ class ReactionPopupLayout(
     val scaledHalfGlyph = (dp(params.style.emojiFontSize).toFloat() * params.style.hoverScale) / 2f
     val visualTop = animatedCenterY - scaledHalfGlyph
 
+    val rawTranslationY = visualTop - hoverLabelView.measuredHeight - dp(4f).toFloat()
+
+    val trayLoc = IntArray(2)
+    getLocationOnScreen(trayLoc)
+    val labelTopOnScreen = trayLoc[1] + rawTranslationY
+    val topInset = ViewCompat.getRootWindowInsets(this)
+      ?.getInsets(WindowInsetsCompat.Type.systemBars())?.top?.toFloat() ?: 0f
+    val shift = if (labelTopOnScreen < topInset) topInset - labelTopOnScreen else 0f
+
     hoverLabelView.translationX = targetCenterX - hoverLabelView.measuredWidth / 2f
-    hoverLabelView.translationY = visualTop - hoverLabelView.measuredHeight - dp(4f).toFloat()
+    hoverLabelView.translationY = rawTranslationY + shift
     hoverLabelView.animate().alpha(1f).setDuration(150).start()
   }
 
