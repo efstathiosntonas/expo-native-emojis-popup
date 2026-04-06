@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.2](https://github.com/efstathiosntonas/expo-native-emojis-popup/compare/v1.0.1...v1.0.2) (2026-04-06)
+
+### Bug Fixes
+
+* clamp hover label to safe area when popup is near top of screen ([#2](https://github.com/efstathiosntonas/expo-native-emojis-popup/issues/2)) ([5537933](https://github.com/efstathiosntonas/expo-native-emojis-popup/commit/5537933d43661db29a0f2f2487b9136b16a2b3e0))
+
+### Refactoring
+
+* split App.tsx god component into atomic example components ([#1](https://github.com/efstathiosntonas/expo-native-emojis-popup/issues/1)) ([265d777](https://github.com/efstathiosntonas/expo-native-emojis-popup/commit/265d777cfb4f436e1c4bfa529086f1c71effbbca))
+
+### Documentation
+
+* refactor `anchorId` definition on declarative usage example ([950d66a](https://github.com/efstathiosntonas/expo-native-emojis-popup/commit/950d66ac9c5a86618cb7fae45233d24110b9f493))
+
 ## [1.0.1](https://github.com/efstathiosntonas/expo-native-emojis-popup/compare/1.0.0...v1.0.1) (2026-04-06)
 
 ### Chores
