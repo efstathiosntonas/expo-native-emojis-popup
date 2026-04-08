@@ -122,6 +122,7 @@ type ShowReactionPopupParams = {
   preferredPlacement?: NativeReactionPopupPlacement; // popup placement (default: 'auto')
   selectedId?: string | null;                    // pre-selected item ID (default: null)
   showLabels?: boolean;                          // show emoji name labels on hover during drag (default: true)
+  hideLabelsInSafeArea?: boolean;                // hide hover labels when they would overlap the safe area/notch (default: true)
   style?: NativeReactionPopupStyle;              // visual style config
 };
 
@@ -404,6 +405,7 @@ if (result.type === 'plus') {
 - Animations respect Reduce Motion (iOS) and Animator Duration Scale (Android)
 - Spring animations for hover effects (stiffness/damping tuned per platform)
 - Hover labels auto-position above the scaled emoji using emojiFontSize for tight spacing
+- Hover labels are hidden when they would overlap the safe area/notch (e.g., when the popup is near the top of the screen); controlled by `hideLabelsInSafeArea` (default: true)
 - Safe area aware positioning -- popup avoids notches and system bars
 - Backdrop tap dismisses by default (configurable via `dismissOnBackdropPress`)
 - Drag release outside popup stays open and converts to tap mode by default (configurable via `dismissOnDragOut`)

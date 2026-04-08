@@ -355,15 +355,21 @@ class ReactionPopupLayout(
 
     val rawTranslationY = visualTop - hoverLabelView.measuredHeight - dp(4f).toFloat()
 
-    val trayLoc = IntArray(2)
-    getLocationOnScreen(trayLoc)
-    val labelTopOnScreen = trayLoc[1] + rawTranslationY
-    val topInset = ViewCompat.getRootWindowInsets(this)
-      ?.getInsets(WindowInsetsCompat.Type.systemBars())?.top?.toFloat() ?: 0f
-    val shift = if (labelTopOnScreen < topInset) topInset - labelTopOnScreen else 0f
+    // Hide the label if it would clip into the safe area (status bar/notch)
+    if (params.hideLabelsInSafeArea) {
+      val trayLoc = IntArray(2)
+      getLocationOnScreen(trayLoc)
+      val labelTopOnScreen = trayLoc[1] + rawTranslationY
+      val topInset = ViewCompat.getRootWindowInsets(this)
+        ?.getInsets(WindowInsetsCompat.Type.systemBars())?.top?.toFloat() ?: 0f
+      if (labelTopOnScreen < topInset) {
+        hoverLabelView.animate().alpha(0f).setDuration(100).start()
+        return
+      }
+    }
 
     hoverLabelView.translationX = targetCenterX - hoverLabelView.measuredWidth / 2f
-    hoverLabelView.translationY = rawTranslationY + shift
+    hoverLabelView.translationY = rawTranslationY
     hoverLabelView.animate().alpha(1f).setDuration(150).start()
   }
 
