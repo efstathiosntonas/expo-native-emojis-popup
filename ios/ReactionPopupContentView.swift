@@ -301,13 +301,16 @@ final class ReactionPopupContentView: UIView {
     let scaledHalfGlyph = (params.style.emojiFontSize * params.style.hoverScale) / 2
     let visualTop = animatedCenterY - scaledHalfGlyph
 
-    var labelCenterY = visualTop - 4 - hoverLabel.bounds.height / 2
+    let labelCenterY = visualTop - 4 - hoverLabel.bounds.height / 2
 
-    if let window = self.window {
+    // Hide the label if it would clip into the safe area (notch/status bar)
+    if params.hideLabelsInSafeArea, let window = self.window {
       let labelTopInWindow = convert(CGPoint(x: 0, y: labelCenterY - hoverLabel.bounds.height / 2), to: window).y
-      let minY = window.safeAreaInsets.top
-      if labelTopInWindow < minY {
-        labelCenterY += minY - labelTopInWindow
+      if labelTopInWindow < window.safeAreaInsets.top {
+        UIView.animate(withDuration: 0.12) {
+          self.hoverLabel.alpha = 0
+        }
+        return
       }
     }
 
