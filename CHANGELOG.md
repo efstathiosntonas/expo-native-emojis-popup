@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.5](https://github.com/efstathiosntonas/expo-native-emojis-popup/compare/v1.0.4...v1.0.5) (2026-04-08)
+
+### Chores
+
+* hide labels on safe area clipping ([#4](https://github.com/efstathiosntonas/expo-native-emojis-popup/issues/4)) ([341c74c](https://github.com/efstathiosntonas/expo-native-emojis-popup/commit/341c74c1a9b003b483c15a75ee45b6cfe35ac379))
+
 ## [1.0.4](https://github.com/efstathiosntonas/expo-native-emojis-popup/compare/v1.0.3...v1.0.4) (2026-04-08)
 
 ## [1.0.3](https://github.com/efstathiosntonas/expo-native-emojis-popup/compare/v1.0.2...v1.0.3) (2026-04-06)
