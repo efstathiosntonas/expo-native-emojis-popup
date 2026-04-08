@@ -214,6 +214,8 @@ type ShowReactionPopupParams = {
   plusEnabled?: boolean;
   preferredPlacement?: 'above' | 'below' | 'auto';
   selectedId?: string | null;
+  showLabels?: boolean;
+  hideLabelsInSafeArea?: boolean;
   style?: NativeReactionPopupStyle;
 };
 ```
@@ -285,6 +287,7 @@ The result is a discriminated union:
 | preferredPlacement | `'above' \| 'below' \| 'auto'` | `'auto'` | Preferred popup position relative to anchor |
 | selectedId | `string \| null` | `null` | ID of the currently selected reaction |
 | showLabels | `boolean` | `true` | Show emoji name labels on hover during drag gestures |
+| hideLabelsInSafeArea | `boolean` | `true` | Hide hover labels when they would overlap the safe area (notch/status bar). Useful when the popup appears near the top of the screen and the scaled emoji + label would clip under the notch |
 | style | `NativeReactionPopupStyle` | -- | Visual style overrides |
 
 ### EmojisPopupModule.dismiss()

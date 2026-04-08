@@ -72,6 +72,7 @@ export type ShowReactionPopupParams = {
   animation?: NativeReactionPopupAnimation;
   style?: NativeReactionPopupStyle;
   showLabels?: boolean;
+  hideLabelsInSafeArea?: boolean;
   onOpen?: () => void;
   onClose?: (result: NativeReactionPopupCloseResult) => void;
 };
