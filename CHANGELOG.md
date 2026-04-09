@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.6](https://github.com/efstathiosntonas/expo-native-emojis-popup/compare/v1.0.5...v1.0.6) (2026-04-09)
+
+### Bug Fixes
+
+* single-tap on longPressDrag popup opens then immediately closes ([#5](https://github.com/efstathiosntonas/expo-native-emojis-popup/issues/5)) ([2dca211](https://github.com/efstathiosntonas/expo-native-emojis-popup/commit/2dca211f89ed0f9dac7f8480173d4ea38c9fb560))
+
+### Chores
+
+* bump /example to expo@55, new Arch ([961da22](https://github.com/efstathiosntonas/expo-native-emojis-popup/commit/961da2278c4725c8c0f584cc9ec4a333dd65cfd3))
+
 ## [1.0.5](https://github.com/efstathiosntonas/expo-native-emojis-popup/compare/v1.0.4...v1.0.5) (2026-04-08)
 
 ### Chores
