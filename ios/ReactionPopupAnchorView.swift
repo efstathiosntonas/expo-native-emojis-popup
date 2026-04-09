@@ -87,6 +87,7 @@ class ReactionPopupAnchorView: ExpoView {
   private var parsedDragParams: ReactionPopupShowParams?
   private var longPressGesture: UILongPressGestureRecognizer?
   private var registeredAnchorId: String?
+  private var isDragActive = false
 
   override func didMoveToWindow() {
     super.didMoveToWindow()
@@ -151,22 +152,26 @@ class ReactionPopupAnchorView: ExpoView {
 
     switch recognizer.state {
     case .began:
+      isDragActive = true
       do {
         try presenter.showForDrag(params: params)
       } catch {
+        isDragActive = false
         #if DEBUG
         print("[NativeReactionPopup] showForDrag failed: \(error)")
         #endif
       }
 
     case .changed:
-      guard let window = self.window else {
+      guard isDragActive, let window = self.window else {
         return
       }
       let windowPoint = recognizer.location(in: window)
       _ = presenter.updateDragPosition(windowPoint: windowPoint)
 
     case .ended:
+      guard isDragActive else { return }
+      isDragActive = false
       guard let window = self.window else {
         presenter.cancelDrag()
         onDragDismiss()
@@ -197,8 +202,13 @@ class ReactionPopupAnchorView: ExpoView {
       }
 
     case .cancelled, .failed:
-      presenter.cancelDrag()
-      onDragDismiss()
+      // Only cancel a drag-initiated popup; taps that never reached .began
+      // must not dismiss a popup opened via the imperative show() API.
+      if isDragActive {
+        presenter.cancelDrag()
+        onDragDismiss()
+      }
+      isDragActive = false
 
     default:
       break

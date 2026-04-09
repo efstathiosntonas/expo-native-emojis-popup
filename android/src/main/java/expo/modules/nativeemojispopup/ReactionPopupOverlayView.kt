@@ -22,13 +22,10 @@ class ReactionPopupOverlayView(
           Color.blue(params.style.backdropColor),
         ),
       )
-      isClickable = params.dismissOnBackdropPress
-      if (params.dismissOnBackdropPress) {
-        contentDescription = "Dismiss reactions"
-        importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
-      } else {
-        importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO
-      }
+      // Start non-interactive; enabled after animateIn() to avoid stray touch-ups
+      // dismissing the popup immediately (matches iOS behaviour).
+      isClickable = false
+      importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO
       setOnClickListener { onBackdropTap?.invoke() }
       layoutParams =
         LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
@@ -59,7 +56,17 @@ class ReactionPopupOverlayView(
 
   fun animateIn() {
     alpha = 0f
-    animate().alpha(1f).setDuration(params.animation.openDurationMs).start()
+    animate()
+      .alpha(1f)
+      .setDuration(params.animation.openDurationMs)
+      .withEndAction {
+        if (params.dismissOnBackdropPress) {
+          backdropView.isClickable = true
+          backdropView.contentDescription = "Dismiss reactions"
+          backdropView.importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
+        }
+      }
+      .start()
     contentView.animateIn()
   }
 
