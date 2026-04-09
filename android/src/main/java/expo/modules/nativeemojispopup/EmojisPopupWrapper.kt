@@ -45,6 +45,7 @@ class EmojisPopupWrapper(
   private val onDragSelect by EventDispatcher()
   private val onDragPlus by EventDispatcher()
   private val onDragDismiss by EventDispatcher()
+  private val onTap by EventDispatcher()
 
   private var parsedDragParams: ReactionPopupShowParams? = null
   private var isDragging = false
@@ -105,6 +106,12 @@ class EmojisPopupWrapper(
 
       MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
         longPressHandler.removeCallbacks(longPressRunnable)
+        // User released before the long-press threshold fired = tap.
+        // Notify JS so it can open the modal popup without relying on
+        // Pressable's onPress timing.
+        if (pendingLongPress && ev.actionMasked == MotionEvent.ACTION_UP) {
+          onTap(emptyMap())
+        }
         pendingLongPress = false
         if (isDragging) return true
         return false

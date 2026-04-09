@@ -9,7 +9,7 @@ class EmojisPopupWrapperModule : Module() {
       Name("EmojisPopupWrapper")
 
       View(EmojisPopupWrapper::class) {
-        Events(arrayOf("onDragSelect", "onDragPlus", "onDragDismiss"))
+        Events(arrayOf("onDragSelect", "onDragPlus", "onDragDismiss", "onTap"))
 
         Prop("anchorId") { view: EmojisPopupWrapper, anchorId: String ->
           view.anchorId = anchorId

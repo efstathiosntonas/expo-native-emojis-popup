@@ -83,6 +83,7 @@ class ReactionPopupAnchorView: ExpoView {
   private let onDragSelect = EventDispatcher()
   private let onDragPlus = EventDispatcher()
   private let onDragDismiss = EventDispatcher()
+  private let onTap = EventDispatcher()
 
   private var parsedDragParams: ReactionPopupShowParams?
   private var longPressGesture: UILongPressGestureRecognizer?
@@ -202,9 +203,8 @@ class ReactionPopupAnchorView: ExpoView {
       }
 
     case .cancelled, .failed:
-      // Only cancel a drag-initiated popup; taps that never reached .began
-      // must not dismiss a popup opened via the imperative show() API.
       if isDragActive {
+        // Drag was active — cancel the drag-initiated popup.
         presenter.cancelDrag()
         onDragDismiss()
       }
@@ -213,6 +213,20 @@ class ReactionPopupAnchorView: ExpoView {
     default:
       break
     }
+  }
+
+  // Detects taps in longPressDrag mode. UILongPressGestureRecognizer (a continuous
+  // recognizer) never calls its action for .failed — so we can't rely on the gesture
+  // callback. Instead we override touchesEnded:
+  //   • Short tap  → recognizer times out and fails → touchesEnded fires (delivered
+  //     after delaysTouchesEnded resolves the gesture-recognizer pipeline).
+  //   • Long press → cancelsTouchesInView=true fires touchesCancelled once .began
+  //     triggers, so touchesEnded never arrives.
+  // Therefore: touchesEnded + !isDragActive = user tapped without triggering the drag.
+  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    super.touchesEnded(touches, with: event)
+    guard gestureMode == "longPressDrag", !isDragActive else { return }
+    onTap([:])
   }
 
   private func refreshRegistration() {
