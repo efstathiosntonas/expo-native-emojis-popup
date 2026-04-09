@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.0](https://github.com/efstathiosntonas/expo-native-emojis-popup/compare/v1.0.6...v1.1.0) (2026-04-09)
+
+### Features
+
+* add onTap native event for longPressDrag mode ([#6](https://github.com/efstathiosntonas/expo-native-emojis-popup/issues/6)) ([24f51fc](https://github.com/efstathiosntonas/expo-native-emojis-popup/commit/24f51fca720fc9d4054bb0b59f8ed93c7ec161d9))
+
 ## [1.0.6](https://github.com/efstathiosntonas/expo-native-emojis-popup/compare/v1.0.5...v1.0.6) (2026-04-09)
 
 ### Bug Fixes
