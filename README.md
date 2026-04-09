@@ -130,6 +130,7 @@ import type {
   NativeReactionPopupResult,
   NativeReactionPopupStyle,
   ShowReactionPopupParams,
+  TapEvent,
 } from 'expo-native-emojis-popup';
 ```
 
@@ -311,6 +312,7 @@ A declarative React component that wraps a trigger element and manages popup pre
 | onDragDismiss | `(event: DragDismissEvent) => void` | -- | Called when drag ends without selection |
 | onDragPlus | `(event: DragPlusEvent) => void` | -- | Called when plus button is reached via drag |
 | onDragSelect | `(event: DragSelectEvent) => void` | -- | Called when a reaction is selected via drag |
+| onTap | `(event: TapEvent) => void` | -- | Called when the user taps (press shorter than long-press threshold) in `longPressDrag` mode. Use this to open the modal popup via `EmojisPopupModule.show()` so the same button supports both interactions |
 
 ## Gesture Modes
 
@@ -318,6 +320,47 @@ The `gestureMode` prop on `EmojisPopup` controls how the popup is triggered:
 
 - **`none`** (default) -- No gesture handling. Use with the imperative API (`EmojisPopupModule.show()`) for full control over when the popup appears.
 - **`longPressDrag`** -- Long press opens the popup, then drag your finger over emojis to hover and preview. Releasing your finger over an emoji selects it. Releasing outside the popup keeps it open and converts to tap mode (set `dismissOnDragOut: true` to dismiss instead). Hover labels showing the emoji name appear above each item during drag.
+
+## Dual Mode (Tap + Long-Press Drag)
+
+Some UIs benefit from both interactions on the same button: a quick tap opens the modal popup instantly, while a long-press-drag lets users select without lifting their finger. Use `gestureMode="longPressDrag"` together with `onTap` to achieve this cleanly.
+
+`onTap` is fired natively (from the gesture recognizer) when the user releases before the long-press threshold — no JS timing hacks required.
+
+```tsx
+import { EmojisPopup, EmojisPopupModule } from 'expo-native-emojis-popup';
+
+function ReactionButton({ postId, currentReaction }) {
+  const anchorId = `post:${postId}:react`;
+
+  const handleTap = async () => {
+    // Short tap — open the modal popup via the imperative API
+    const result = await EmojisPopupModule.show({
+      anchorId,
+      items: REACTIONS,
+      selectedId: currentReaction,
+      preferredPlacement: 'above',
+      haptics: { onOpen: true, onSelect: true },
+    });
+    if (result.type === 'select') onReact(result.id);
+  };
+
+  return (
+    <EmojisPopup
+      anchorId={anchorId}
+      dragParams={{ anchorId, items: REACTIONS, selectedId: currentReaction, preferredPlacement: 'above' }}
+      gestureMode="longPressDrag"
+      onDragSelect={(e) => onReact(e.nativeEvent.id)}
+      onDragDismiss={() => {}}
+      onTap={handleTap}
+    >
+      <Pressable>
+        <Text>React</Text>
+      </Pressable>
+    </EmojisPopup>
+  );
+}
+```
 
 ## Placement
 

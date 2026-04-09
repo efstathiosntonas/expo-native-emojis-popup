@@ -105,3 +105,10 @@ export type DragPlusEvent = {
 export type DragDismissEvent = {
   nativeEvent: Record<string, never>;
 };
+
+/** Fired when the user taps (press shorter than the long-press threshold)
+ *  while gestureMode="longPressDrag". Use this to open the modal popup
+ *  imperatively without relying on Pressable's onPress timing. */
+export type TapEvent = {
+  nativeEvent: Record<string, never>;
+};

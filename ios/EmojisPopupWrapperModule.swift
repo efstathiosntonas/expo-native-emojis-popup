@@ -8,7 +8,8 @@ public class EmojisPopupWrapperModule: Module {
       Events([
         "onDragSelect",
         "onDragPlus",
-        "onDragDismiss"
+        "onDragDismiss",
+        "onTap"
       ])
 
       Prop("anchorId") { (view: ReactionPopupAnchorView, anchorId: String) in

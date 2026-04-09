@@ -6,7 +6,8 @@ import type {
   DragDismissEvent,
   DragPlusEvent,
   DragSelectEvent,
-  ShowReactionPopupParams
+  ShowReactionPopupParams,
+  TapEvent
 } from './ExpoNativeEmojisPopup.types';
 
 export type EmojisPopupProps = {
@@ -17,6 +18,9 @@ export type EmojisPopupProps = {
   onDragDismiss?: (event: DragDismissEvent) => void;
   onDragPlus?: (event: DragPlusEvent) => void;
   onDragSelect?: (event: DragSelectEvent) => void;
+  /** Fired when the user taps (shorter than long-press threshold) in
+   *  longPressDrag mode. Use to open the modal popup imperatively. */
+  onTap?: (event: TapEvent) => void;
 };
 
 type NativeViewProps = Omit<
@@ -47,7 +51,8 @@ export function EmojisPopup({
   gestureMode = 'none',
   onDragDismiss,
   onDragPlus,
-  onDragSelect
+  onDragSelect,
+  onTap
 }: EmojisPopupProps) {
   const NativeView = getNativeView();
 
@@ -60,6 +65,7 @@ export function EmojisPopup({
       onDragDismiss={onDragDismiss}
       onDragPlus={onDragPlus}
       onDragSelect={onDragSelect}
+      onTap={onTap}
     >
       {children}
     </NativeView>

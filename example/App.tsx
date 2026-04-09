@@ -3,6 +3,7 @@ import { SafeAreaView, ScrollView, StyleSheet, Text, useColorScheme } from 'reac
 import { CenteredDemo } from './components/CenteredDemo';
 import { ColorfulDemo } from './components/ColorfulDemo';
 import { DarkMinimalDemo } from './components/DarkMinimalDemo';
+import { DualModeDemo } from './components/DualModeDemo';
 import { FacebookStyleDemo } from './components/FacebookStyleDemo';
 import { ThemeToggle } from './components/ThemeToggle';
 
@@ -27,6 +28,7 @@ export default function App() {
 
         <ThemeToggle dark={dark} onToggle={() => setDark((d) => !d)} />
 
+        <DualModeDemo dark={dark} />
         <FacebookStyleDemo dark={dark} />
         <DarkMinimalDemo dark={dark} />
         <ColorfulDemo dark={dark} />

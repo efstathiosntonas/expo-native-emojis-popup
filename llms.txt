@@ -41,6 +41,7 @@ import type {
   NativeReactionPopupResult,
   NativeReactionPopupStyle,
   ShowReactionPopupParams,
+  TapEvent,
 } from 'expo-native-emojis-popup';
 ```
 
@@ -148,6 +149,8 @@ type NativeReactionPopupErrorCode =
 type DragDismissEvent = { nativeEvent: Record<string, never> };
 type DragPlusEvent = { nativeEvent: Record<string, never> };
 type DragSelectEvent = { nativeEvent: { id: string } };
+/** Fired when the user taps (press shorter than long-press threshold) in longPressDrag mode */
+type TapEvent = { nativeEvent: Record<string, never> };
 
 type EmojisPopupProps = {
   anchorId: string;                              // unique ID to reference this wrapper view (required)
@@ -157,6 +160,7 @@ type EmojisPopupProps = {
   onDragDismiss?: (event: DragDismissEvent) => void; // fired when drag ends without selection
   onDragPlus?: (event: DragPlusEvent) => void;      // fired when user drags to plus
   onDragSelect?: (event: DragSelectEvent) => void;  // fired when user selects via drag
+  onTap?: (event: TapEvent) => void;                // fired on short tap in longPressDrag mode; use to open modal popup via EmojisPopupModule.show()
 };
 
 // Module interface exposed by EmojisPopupModule
@@ -278,6 +282,31 @@ function MessageBubble({ message }) {
 
 - **`none`** (default) -- no built-in gesture; use the imperative `EmojisPopupModule.show()` API to present the popup programmatically
 - **`longPressDrag`** -- long press opens the popup, then drag finger over emojis to hover and preview; releasing over an emoji selects it; releasing outside the popup keeps it open and converts to tap mode (set `dismissOnDragOut: true` to dismiss instead); hover labels showing the emoji name appear above each item during drag
+
+## Dual Mode (Tap + Long-Press Drag)
+
+Enable both interactions on the same button using `gestureMode="longPressDrag"` with `onTap`. `onTap` is fired natively when the user releases before the long-press threshold — no JS timing required.
+
+```tsx
+<EmojisPopup
+  anchorId={anchorId}
+  dragParams={{ anchorId, items: REACTIONS, selectedId: currentReaction, preferredPlacement: 'above' }}
+  gestureMode="longPressDrag"
+  onDragSelect={(e) => onReact(e.nativeEvent.id)}
+  onDragDismiss={() => {}}
+  onTap={async () => {
+    const result = await EmojisPopupModule.show({
+      anchorId,
+      items: REACTIONS,
+      selectedId: currentReaction,
+      preferredPlacement: 'above',
+    });
+    if (result.type === 'select') onReact(result.id);
+  }}
+>
+  <Pressable><Text>React</Text></Pressable>
+</EmojisPopup>
+```
 
 ## Placement
 
