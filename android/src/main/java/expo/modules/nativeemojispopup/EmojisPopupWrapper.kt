@@ -62,7 +62,7 @@ class EmojisPopupWrapper(
     isDragging = true
     pendingLongPress = false
 
-    parent?.requestDisallowInterceptTouchEvent(true)
+    setParentInterceptionDisabled(true)
 
     val activity = moduleAppContext.currentActivity
     ReactionPopupPresenter.showForDrag(activity, params)
@@ -148,12 +148,14 @@ class EmojisPopupWrapper(
           ReactionPopupPresenter.cancelDrag()
           onDragDismiss(emptyMap())
         }
+        setParentInterceptionDisabled(false)
         isDragging = false
       }
 
       MotionEvent.ACTION_CANCEL -> {
         ReactionPopupPresenter.cancelDrag()
         onDragDismiss(emptyMap())
+        setParentInterceptionDisabled(false)
         isDragging = false
       }
     }
@@ -166,14 +168,19 @@ class EmojisPopupWrapper(
   }
 
   override fun onDetachedFromWindow() {
-    super.onDetachedFromWindow()
     longPressHandler.removeCallbacks(longPressRunnable)
     pendingLongPress = false
     if (isDragging) {
       ReactionPopupPresenter.cancelDrag()
+      setParentInterceptionDisabled(false)
       isDragging = false
     }
     unregisterCurrentAnchor()
+    super.onDetachedFromWindow()
+  }
+
+  private fun setParentInterceptionDisabled(disabled: Boolean) {
+    parent?.requestDisallowInterceptTouchEvent(disabled)
   }
 
   private fun refreshRegistration() {

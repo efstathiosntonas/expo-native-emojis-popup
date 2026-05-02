@@ -1,6 +1,7 @@
 package expo.modules.nativeemojispopup
 
 import android.annotation.SuppressLint
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -129,6 +130,22 @@ class ReactionPopupLayout(
   }
 
   fun animateIn() {
+    animate().cancel()
+
+    if (!ValueAnimator.areAnimatorsEnabled()) {
+      alpha = 1f
+      scaleX = 1f
+      scaleY = 1f
+      targets.forEach { target ->
+        target.view.animate().cancel()
+        target.view.alpha = 1f
+        target.view.translationY = 0f
+        target.view.scaleX = 1f
+        target.view.scaleY = 1f
+      }
+      return
+    }
+
     val startScale = params.animation.trayInitialScale
     alpha = 0f
     scaleX = startScale
@@ -170,6 +187,15 @@ class ReactionPopupLayout(
   }
 
   fun animateOut(onEnd: () -> Unit) {
+    animate().cancel()
+    targets.forEach { target -> target.view.animate().cancel() }
+
+    if (!ValueAnimator.areAnimatorsEnabled()) {
+      alpha = 0f
+      onEnd()
+      return
+    }
+
     animate()
       .alpha(0f)
       .setDuration(150L)
@@ -334,7 +360,7 @@ class ReactionPopupLayout(
     val isPlusButton = target != null && targets.indexOf(target) == targets.lastIndex && params.plusEnabled
 
     if (name == null || isPlusButton || !params.showLabels) {
-      hoverLabelView.animate().alpha(0f).setDuration(100).start()
+      animateHoverLabelAlpha(0f, 100L)
       return
     }
 
@@ -363,14 +389,25 @@ class ReactionPopupLayout(
       val topInset = ViewCompat.getRootWindowInsets(this)
         ?.getInsets(WindowInsetsCompat.Type.systemBars())?.top?.toFloat() ?: 0f
       if (labelTopOnScreen < topInset) {
-        hoverLabelView.animate().alpha(0f).setDuration(100).start()
+        animateHoverLabelAlpha(0f, 100L)
         return
       }
     }
 
     hoverLabelView.translationX = targetCenterX - hoverLabelView.measuredWidth / 2f
     hoverLabelView.translationY = rawTranslationY
-    hoverLabelView.animate().alpha(1f).setDuration(150).start()
+    animateHoverLabelAlpha(1f, 150L)
+  }
+
+  private fun animateHoverLabelAlpha(targetAlpha: Float, durationMs: Long) {
+    hoverLabelView.animate().cancel()
+
+    if (!ValueAnimator.areAnimatorsEnabled()) {
+      hoverLabelView.alpha = targetAlpha
+      return
+    }
+
+    hoverLabelView.animate().alpha(targetAlpha).setDuration(durationMs).start()
   }
 
   private fun animateSpring(
@@ -383,12 +420,7 @@ class ReactionPopupLayout(
     val key = view to property
     runningAnimations[key]?.cancel()
 
-    val durationScale = android.provider.Settings.Global.getFloat(
-      context.contentResolver,
-      android.provider.Settings.Global.ANIMATOR_DURATION_SCALE,
-      1f
-    )
-    if (durationScale == 0f) {
+    if (!ValueAnimator.areAnimatorsEnabled()) {
       property.setValue(view, targetValue)
       runningAnimations.remove(key)
       return
