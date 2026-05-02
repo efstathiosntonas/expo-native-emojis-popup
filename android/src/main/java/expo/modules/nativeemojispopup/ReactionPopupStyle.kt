@@ -199,8 +199,8 @@ data class ReactionPopupShowParams(
         )
       }
 
-      val rawItems = map["items"] as? List<Map<String, Any?>>
-      if (rawItems.isNullOrEmpty()) {
+      val rawItems = optionalDictionaryArray(map["items"], "items").orEmpty()
+      if (rawItems.isEmpty()) {
         throw EmojisPopupException(
           EmojisPopupErrorCode.EMPTY_ITEMS,
           "Emojis popup requires at least one item.",
@@ -222,10 +222,55 @@ data class ReactionPopupShowParams(
         preferredPlacement = ReactionPopupPlacement.from(map["preferredPlacement"] as? String),
         showLabels = map["showLabels"] as? Boolean ?: true,
         hideLabelsInSafeArea = map["hideLabelsInSafeArea"] as? Boolean ?: true,
-        haptics = ReactionPopupHaptics.fromMap(map["haptics"] as? Map<String, Any?>),
-        animation = ReactionPopupAnimation.fromMap(map["animation"] as? Map<String, Any?>),
-        style = ReactionPopupStyle.fromMap(map["style"] as? Map<String, Any?>),
+        haptics = ReactionPopupHaptics.fromMap(optionalDictionary(map["haptics"], "haptics")),
+        animation = ReactionPopupAnimation.fromMap(optionalDictionary(map["animation"], "animation")),
+        style = ReactionPopupStyle.fromMap(optionalDictionary(map["style"], "style")),
       )
+    }
+  }
+}
+
+private fun optionalDictionaryArray(value: Any?, key: String): List<Map<String, Any?>>? {
+  if (value == null) {
+    return null
+  }
+
+  if (value !is List<*>) {
+    throw EmojisPopupException(
+      EmojisPopupErrorCode.INVALID_PARAMS,
+      "$key must be an array of objects.",
+    )
+  }
+
+  return value.mapIndexed { index, item ->
+    optionalDictionary(item, "$key[$index]")
+      ?: throw EmojisPopupException(
+        EmojisPopupErrorCode.INVALID_PARAMS,
+        "$key[$index] must be an object.",
+      )
+  }
+}
+
+private fun optionalDictionary(value: Any?, key: String): Map<String, Any?>? {
+  if (value == null) {
+    return null
+  }
+
+  if (value !is Map<*, *>) {
+    throw EmojisPopupException(
+      EmojisPopupErrorCode.INVALID_PARAMS,
+      "$key must be an object.",
+    )
+  }
+
+  return buildMap {
+    value.forEach { (entryKey, entryValue) ->
+      val stringKey = entryKey as? String
+        ?: throw EmojisPopupException(
+          EmojisPopupErrorCode.INVALID_PARAMS,
+          "$key must contain only string keys.",
+        )
+      put(stringKey, entryValue)
     }
   }
 }
