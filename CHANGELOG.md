@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.1](https://github.com/efstathiosntonas/expo-native-emojis-popup/compare/v1.1.0...v1.1.1) (2026-05-02)
+
+### Bug Fixes
+
+* **android:** prevent popup overlay freeze ([dfe26c9](https://github.com/efstathiosntonas/expo-native-emojis-popup/commit/dfe26c9fdaf1b934884abfbc3eaff8fe3fc573b3))
+
 ## [1.1.0](https://github.com/efstathiosntonas/expo-native-emojis-popup/compare/v1.0.6...v1.1.0) (2026-04-09)
 
 ### Features

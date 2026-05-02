@@ -1,6 +1,6 @@
 {
   "name": "expo-native-emojis-popup",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A fully native emoji reaction popup for React Native. Built with Swift (iOS) and Kotlin (Android) for 60+ FPS animations. Anchor-based positioning, long-press drag-to-select, haptic feedback, hover labels, and fully customizable styling.",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
